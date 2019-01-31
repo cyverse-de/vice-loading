@@ -1,7 +1,7 @@
-interapps-landing
+vice-loading
 =================
 
-A web application hosting the loading and landing pages for the Visual Interactive Computing Environment (VICE) feature of the Discovery Environment.
+Implements the loading page for VICE apps. It displays after the job is submitted and the URL has been generated, but before the application is fully up and running.
 
 ## Development
 
@@ -21,7 +21,6 @@ The server project uses dotenv to configure set of environment variables. The fu
 * VICE_DOMAIN - The public-facing base URL for VICE, used for extracting subdomain information.
 * APP_EXPOSER_HEADER - The HTTP Host header value for accessing the app-exposer service API.
 * INGRESS - The URL to the Kubernetes Ingress.
-* UI - The relative path to the built UI that the server should serve up on `/`. It's relative to the index.js file in the `server/src/index.js` file.
 * DEBUG - Optional, can contain a comma-separated list of modules in src for which to enable debug logging. Can also be set to `*`.
 
 A sample `.env` file is provided at `server/.env.example`. All `.env` files should be blocked from being checked in by the `.gitignore`, but make sure you don't accidentally check in a file with sensitive info.
@@ -38,7 +37,7 @@ You should start off by running `npm install` in the top-level directory. Then d
 
 ### Building
 
-Each of the projects (`client-landing`, `client-loading`, `server`) can be built individually by running `npm run build` while inside their corresponding project directories.
+Each of the projects (`client-loading`, `server`) can be built individually by running `npm run build` while inside their corresponding project directories.
 
 You can build everything at once by running 'npm run build-all` script from the top-level directory.
 
@@ -46,11 +45,11 @@ The result will be a `build` directory created in each of the project directorie
 
 ### Cleaning
 
-The top-level package.json has `clean` and `clean-all` scripts defined. The `clean` script will clear out each project's `build` directory. You can run it with: `npm run clean`.
+The top-level package.json has a `clean` script defined, which clears out each project's `build` directory. You can run it with `npm run clean`.
 
 ### Running everything during development
 
-First, make sure everything is built. You only really need to build the UIs up front, but it's easiest and pretty quick to just build everything: `npm run build-all`.
+First, make sure everything is built. You only really need to build the UI up front, but it's easiest and pretty quick to just build everything: `npm run build-all`.
 
 You can fire up everything (minus storybook instances) by executing `npm run dev` from the top-level directory. The built UIs will be served up by the server instance that's started. You can access the UI at: http://localhost:60000. Make sure you have your `.env` file created at `server/.env`.
 
