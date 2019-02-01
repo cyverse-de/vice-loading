@@ -1,5 +1,5 @@
 import express from 'express';
-
+import db from './db';
 import hasValidSubdomain, { extractSubdomain } from './subdomain';
 import { endpointConfig, ingressExists } from './ingress';
 import compression from 'compression';
