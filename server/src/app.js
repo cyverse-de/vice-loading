@@ -1,5 +1,5 @@
 import express from 'express';
-import db from './db';
+import { getDB } from './db';
 import hasValidSubdomain, { extractSubdomain } from './subdomain';
 import { endpointConfig, ingressExists } from './ingress';
 import compression from 'compression';
@@ -12,6 +12,8 @@ import url from 'url';
 const fetch = require('node-fetch');
 const debug = require('debug')('app');
 const dateFunc = require("add-subtract-date");
+
+const db = getDB();
 
 const app = express();
 app.use(compression());
