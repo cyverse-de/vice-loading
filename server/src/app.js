@@ -73,18 +73,18 @@ apirouter.get("/url-ready", async (req, res) => {
 
   debug(`url-ready; URL: ${urlToCheck}; ready after fetching URL: ${ready}`);
 
-  if (ready) {
-    ready = await fetch(`http://${endpoint.IP}:${endpoint.Port}/url-ready`, {
-      "redirect": "manual"
-    })
-    .then(resp => resp.json())
-    .then(data => data["ready"])
-    .then(data => {
-      debug(`url-ready; URL: ${urlToCheck}; fetch endpoint response: ${data}`);
-      return data;
-    })
-    .catch(e => false);
-  }
+  // if (ready) {
+  //   ready = await fetch(`http://${endpoint.IP}:${endpoint.Port}/url-ready`, {
+  //     "redirect": "manual"
+  //   })
+  //   .then(resp => resp.json())
+  //   .then(data => data["ready"])
+  //   .then(data => {
+  //     debug(`url-ready; URL: ${urlToCheck}; endpoint: http://${endpoint.IP}:${endpoint.Port}/url-ready; fetch endpoint response: ${data}`);
+  //     return data;
+  //   })
+  //   .catch(e => false);
+  // }
 
   debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`);
 
