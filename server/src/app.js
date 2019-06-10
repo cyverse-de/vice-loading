@@ -40,53 +40,20 @@ apirouter.get("/url-ready", async (req, res) => {
     throw new Error(`no valid subdomain found in ${urlToCheck}`);
   }
 
-  const subdomain = extractSubdomain(urlToCheck);
-  debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
+  let readyURL = new URL(urlToCheck);
+  
+  readyURL.pathname = "/url-ready";
 
-  let ready = await ingressExists(subdomain);
-  let endpoint;
-
-  debug(`url-ready; URL: ${urlToCheck}; ready after ingress check: ${ready}`);
-
-  if (ready) {
-    endpoint = await endpointConfig(subdomain).catch(e => {
-      debug(`url-ready: URL: ${urlToCheck}; endpoint config error: ${e}`);
-      ready = false;
-    });
-  }
-
-  debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint config: ${ready}`);
-
-  if (ready) {
-    ready = await fetch(urlToCheck, {
-      "redirect": "manual"
-    })
-    .then(resp => {
-      debug(`url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`);
-      if (resp.status >= 200 && resp.status < 400) {
-        return true;
-      }
-      return false;
-    })
-    .catch(e => false);
-  }
-
-  debug(`url-ready; URL: ${urlToCheck}; ready after fetching URL: ${ready}`);
-
-  if (ready) {
-    ready = await fetch(`http://${endpoint.IP}:${endpoint.Port}/url-ready`, {
-      "redirect": "manual"
-    })
-    .then(resp => resp.json())
-    .then(data => data["ready"])
-    .then(data => {
-      debug(`url-ready; URL: ${urlToCheck}; endpoint: http://${endpoint.IP}:${endpoint.Port}/url-ready; fetch endpoint response: ${data}`);
-      return data;
-    })
-    .catch(e => false);
-  }
-
-  debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`);
+  ready = await fetch(readyURL.toString() , {
+    "redirect": "manual"
+  })
+  .then(resp => resp.json())
+  .then(data => data["ready"])
+  .then(data => {
+    debug(`url-ready; URL: ${readyURL.toString()}; fetch endpoint response: ${data}`);
+    return data;
+  })
+  .catch(e => false);
 
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ready: ready}));
