@@ -40,18 +40,15 @@ apirouter.get("/url-ready", async (req, res) => {
     throw new Error(`no valid subdomain found in ${urlToCheck}`);
   }
 
-  let readyURL = new URL(urlToCheck);
-  
-  readyURL.pathname = "/url-ready";
-
-  ready = await fetch(readyURL.toString() , {
+  let ready = await fetch(urlToCheck , {
     "redirect": "manual"
   })
-  .then(resp => resp.json())
-  .then(data => data["ready"])
-  .then(data => {
-    debug(`url-ready; URL: ${readyURL.toString()}; fetch endpoint response: ${data}`);
-    return data;
+  .then(resp => {
+    debug(`url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`);
+    if (resp.status >= 200 && resp.status < 400) {
+      return true;
+    }
+    return false;
   })
   .catch(e => false);
 
