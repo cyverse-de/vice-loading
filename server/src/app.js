@@ -40,12 +40,14 @@ apirouter.get("/url-ready", async (req, res) => {
     throw new Error(`no valid subdomain found in ${urlToCheck}`);
   }
 
+  let ready = false;
+
   // k8s disabled
   if (process.env.K8S_ENABLED !== "" && process.env.K8S_ENABLED !== "0") {
     const subdomain = extractSubdomain(urlToCheck);
     debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
 
-    let ready = await ingressExists(subdomain);
+    ready = await ingressExists(subdomain);
     let endpoint;
 
     debug(`url-ready; URL: ${urlToCheck}; ready after ingress check: ${ready}`);
@@ -91,7 +93,7 @@ apirouter.get("/url-ready", async (req, res) => {
     debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`);
   } else {
     // K8s enabled
-    let ready = await fetch(urlToCheck , {
+    ready = await fetch(urlToCheck , {
       "redirect": "manual"
     })
     .then(resp => {
