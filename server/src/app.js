@@ -42,6 +42,9 @@ apirouter.get("/url-ready", async (req, res) => {
 
   // k8s disabled
   if (process.env.K8S_ENABLED !== "" && process.env.K8S_ENABLED !== "0") {
+    const subdomain = extractSubdomain(urlToCheck);
+    debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
+
     let ready = await ingressExists(subdomain);
     let endpoint;
 
@@ -100,7 +103,7 @@ apirouter.get("/url-ready", async (req, res) => {
     })
     .catch(e => false);
   }
-  
+
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ready: ready}));
 });
