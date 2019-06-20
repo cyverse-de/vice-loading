@@ -40,13 +40,13 @@ apirouter.get("/url-ready", async (req, res) => {
     throw new Error(`no valid subdomain found in ${urlToCheck}`);
   }
 
+  const subdomain = extractSubdomain(urlToCheck);
+  debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
+
   let ready = false;
 
   // k8s disabled
   if (process.env.K8S_ENABLED !== "" && process.env.K8S_ENABLED !== "0") {
-    const subdomain = extractSubdomain(urlToCheck);
-    debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
-
     ready = await ingressExists(subdomain);
     let endpoint;
 
@@ -93,15 +93,22 @@ apirouter.get("/url-ready", async (req, res) => {
     debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`);
   } else {
     // K8s enabled
-    ready = await fetch(urlToCheck , {
+
+    const viceAPI = new url.URL(`/vice/${subdomain}/url-ready`, process.env.INGRESS);
+    const reqOptions = {
+      headers: {
+        "Host" : process.env.APP_EXPOSER_HEADER
+      }
+    };
+
+    ready = await fetch(viceAPI , {
       "redirect": "manual"
     })
-    .then(resp => {
-      debug(`url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`);
-      if (resp.status >= 200 && resp.status < 400) {
-        return true;
-      }
-      return false;
+    .then(resp => resp.json())
+    .then(data => data["ready"])
+    .then(data => {
+      debug(`url-ready; URL: ${viceAPI}; ${data}`);
+      return data;
     })
     .catch(e => false);
   }
