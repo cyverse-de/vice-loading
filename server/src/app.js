@@ -46,7 +46,7 @@ apirouter.get("/url-ready", async (req, res) => {
   let ready = false;
 
   // k8s disabled
-  if (process.env.K8S_ENABLED !== "" && process.env.K8S_ENABLED !== "0") {
+  if (process.env.K8S_ENABLED === "" || process.env.K8S_ENABLED === "0") {
     ready = await ingressExists(subdomain);
     let endpoint;
 
