@@ -32,17 +32,13 @@ export function extractSubdomain(urlWithSubdomain) {
   if (fields.length < 2) {
     throw new Error(`no subdomain found in ${urlWithSubdomain}`);
   }
-  if (fields.length === 2) {
-    if (fields[0] === 'www') {
-      debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ''`);
-      return "";
-    }
-    debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ${field[0]}`);
-    return fields[0];
+  if (fields.length === 2 && fields[0] === 'www') {
+    debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ''`);
+    return "";
   }
-  const retval = fields.slice(0,fields.length-2).join('.');
-  debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ${retval}`);
-  return retval;
+
+  debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ${field[0]}`);
+  return fields[0];
 }
 
 // hasValidSubdomain checks to see if the `str` parameter contains a subdomain
