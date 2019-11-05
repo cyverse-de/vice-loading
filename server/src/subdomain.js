@@ -37,7 +37,7 @@ export function extractSubdomain(urlWithSubdomain) {
     return "";
   }
 
-  debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ${field[0]}`);
+  debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ${fields[0]}`);
   return fields[0];
 }
 

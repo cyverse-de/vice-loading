@@ -33,7 +33,7 @@ describe('hasValidSubdomain', () => {
 
 test('extractSubdomain', () => {
   expect(extractSubdomain('http://afoo.cyverse.run:4343')).toBe('afoo');
-  expect(extractSubdomain('http://afoo.bar.cyverse.run:4343')).toBe('afoo.bar');
+  expect(extractSubdomain('http://afoo.bar.cyverse.run:4343')).toBe('afoo');
   expect(() => {
     extractSubdomain('afoo.cyverse.run:4343');
   }).toThrowError();
