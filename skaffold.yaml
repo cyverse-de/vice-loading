@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1
+kind: Config
+metadata:
+  name: vice-loading
+deploy:
+  kubectl:
+    manifests:
+    - k8s/vice-loading.yml
+build:
+  tagPolicy:
+    gitCommit: {}
+  artifacts:
+  - image: discoenv/vice-loading
+  local: {}
