@@ -4,7 +4,7 @@
 // the DE database. See ../.env.example for the format.
 
 const initOptions = {};
-const pgp = require('pg-promise')(initOptions);
+const pgp = require("pg-promise")(initOptions);
 
 let db;
 
@@ -24,6 +24,6 @@ SELECT *
  STATUS = $2
 `;
 
-export function viceAnalyses(username,status) {
-  return getDB().any(analysesQuery, [username, status]);
+export function viceAnalyses(username, status) {
+    return getDB().any(analysesQuery, [username, status]);
 }

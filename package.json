@@ -4,30 +4,127 @@
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
-    "start": "npm run server",
-    "server": "node start-server.js",
-    "port-forward": "concurrently \"node port-forward-redis.js\" \"node port-forward-apps.js\"",
-    "dev": "run-s build-all dev-server",
-    "dev-server": "concurrently \"npm run port-forward\" \"node start-server.js\"",
-    "build-server": "node build-server.js",
-    "build-loading": "node build-loading-ui.js",
-    "build-all": "run-s clean build-server build-loading",
-    "install-server": "node install-server.js",
-    "install-loading": "node install-loading.js",
-    "install-all": "run-p install-server install-loading",
-    "clean": "concurrently \"rimraf server/build\" \"rimraf client-loading/build\"",
-    "test": "concurrently \"node test-server.js\""
+    "dev": "nodemon",
+    "dev-server": "cross-env NODE_ENV=development babel-node ./src/server/",
+    "build-frontend": "next build",
+    "build-server": "babel ./src/server ./src/common --out-dir dist",
+    "build": "run-p build-frontend build-server",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "format": "prettier --write './**/*.js'",
+    "lint": "eslint --max-warnings=0 ./src/",
+    "clean": "rimraf ./.next ./dist ./generated-docs"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-runtime": "^6.26.0",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
     "concurrently": "^4.0.1",
+    "crossenv": "0.0.2-security",
     "dotenv": "^6.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-react-app": "^5.1.0",
+    "eslint-plugin-flowtype": "^3.13.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "@storybook/addon-actions": "^5.2.8",
+    "@storybook/addon-console": "^1.2.1",
+    "@storybook/addon-knobs": "^5.2.8",
+    "@storybook/addon-links": "^5.2.8",
+    "@storybook/addons": "^5.2.8",
+    "@storybook/react": "^5.2.8",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "jsdoc": "^3.6.3",
+    "lint-staged": "^10.0.7",
     "nodemon": "^1.18.9",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^2.6.2"
+    "prettier": "^1.19.1",
+    "rimraf": "^2.6.2",
+    "http-proxy-middleware": "^0.19.0",
+    "typescript": "^2.8.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.2.11"
   },
   "dependencies": {
-    "npm": "^6.13.4"
-  }
+    "@material-ui/core": "^4.9.2",
+    "@material-ui/icons": "^4.9.1",
+    "add-subtract-date": "^1.0.14",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "connect-pg-simple": "^6.0.1",
+    "cors": "^2.8.5",
+    "debug": "^4.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.15.6",
+    "express-winston": "^4.0.3",
+    "helmet": "^3.21.2",
+    "morgan": "^1.9.1",
+    "next": "^9.2.1",
+    "node-fetch": "^2.3.0",
+    "pg-promise": "^8.5.3",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.6.1",
+    "redux-devtools": "^3.5.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "resource-router-middleware": "^0.7.0",
+    "winston": "^3.2.1"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src/server"
+    ],
+    "ext": "js",
+    "exec": "run-s dev-server"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "plugin:jsx-a11y/recommended"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off"
+    },
+    "plugins": [
+      "jsx-a11y"
+    ]
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "jsxBracketSameLine": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --max-warnings=0 --no-ignore",
+      "prettier --write",
+      "jest --bail --findRelatedTests"
+    ]
+  },
+  "proxy": "http://localhost:60000",
+  "homepage": ".",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
