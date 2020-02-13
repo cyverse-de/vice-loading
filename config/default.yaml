@@ -1,0 +1,7 @@
+port: 6000
+vice_domain: https://cyverse.run
+app_exposer_header: app-exposer
+db:
+debug: permissions,app,db
+ingress:
+de: https://de.cyverse.org
