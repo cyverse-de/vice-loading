@@ -18,5 +18,4 @@ export const DEBUG = config.get("debug");
 export const Ingress = config.get("ingress");
 export const DE = config.get("de");
 export const K8sEnabled = parseBoolean(config.get("k8s_enabled"));
-export const isDevelopment = config.get("node_env") !== "production";
-process.env.NODE_ENV = config.get("node_env");
+export const isDevelopment = process.env.NODE_ENV !== "production";
