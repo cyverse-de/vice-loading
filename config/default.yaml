@@ -5,3 +5,5 @@ db:
 debug: permissions,app,db
 ingress:
 de: https://de.cyverse.org
+k8s_enabled: true
+node_env: development

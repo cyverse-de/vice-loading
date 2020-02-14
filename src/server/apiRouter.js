@@ -3,6 +3,7 @@ import url from "url";
 import hasValidSubdomain, { extractSubdomain } from "./subdomain";
 import { endpointConfig, ingressExists } from "./ingress";
 import noCache from "nocache";
+import * as config from "./configuration";
 
 const fetch = require("node-fetch");
 const debug = require("debug")("app");
@@ -28,7 +29,7 @@ apirouter.get("/url-ready", async (req, res) => {
     let ready = false;
 
     // k8s disabled
-    if (process.env.K8S_ENABLED === "" || process.env.K8S_ENABLED === "0") {
+    if (config.K8sEnabled) {
         ready = await ingressExists(subdomain);
         let endpoint;
 
@@ -95,7 +96,7 @@ apirouter.get("/url-ready", async (req, res) => {
 
         const viceAPI = new url.URL(
             `/vice/${subdomain}/url-ready`,
-            process.env.INGRESS
+            config.Ingress
         );
 
         ready = await fetch(viceAPI, {

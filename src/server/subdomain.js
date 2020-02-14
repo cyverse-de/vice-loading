@@ -1,4 +1,5 @@
 import url from "url";
+import * as config from "./configuration";
 
 const debug = require("debug")("subdomain");
 
@@ -16,8 +17,8 @@ function escapeRegExp(string) {
 // getSubdomainRegex will construct a RegExp object that can be used to tell if
 // a subdomain is included in the string it's applied to. Uses the VICE_DOMAIN
 // environment variable.
-function getSubdomainRegex() {
-    const viceURL = new url.URL(process.env.VICE_DOMAIN);
+function getSubdomainRegex(configViceDomain) {
+    const viceURL = new url.URL(configViceDomain);
     const viceDomain = escapeRegExp(viceURL.host);
     debug(`getSubdomainRegex: escaped VICE_DOMAIN: ${viceDomain}`);
     return new RegExp(`(a.*\\.)?${viceDomain}(:[0-9]+)?`);
@@ -43,8 +44,8 @@ export function extractSubdomain(urlWithSubdomain) {
 
 // hasValidSubdomain checks to see if the `str` parameter contains a subdomain
 // and is part of the configured VICE_DOMAIN.
-export default function hasValidSubdomain(str) {
-    const fields = getSubdomainRegex().exec(str);
+export const hasValidSubdomainConfigurable = (str, viceDomain) => {
+    const fields = getSubdomainRegex(viceDomain).exec(str);
     const isValid =
         fields !== null &&
         fields.length >= 2 &&
@@ -52,4 +53,8 @@ export default function hasValidSubdomain(str) {
         fields[1] !== undefined;
     debug(`hasValidSubdomain; input: ${str}; result: ${isValid}`);
     return isValid;
+};
+
+export default function hasValidSubdomain(str) {
+    return hasValidSubdomainConfigurable(str, config.ViceDomain);
 }

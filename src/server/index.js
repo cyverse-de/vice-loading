@@ -7,6 +7,7 @@ import compression from "compression";
 import helmet from "helmet";
 import noCache from "nocache";
 import morgan from "morgan";
+import * as config from "./configuration";
 
 const db = getDB();
 
@@ -45,11 +46,9 @@ app.prepare()
             return nextHandler(req, res);
         });
 
-        const port = process.env.PORT || 60000;
-
-        server.listen(port, (err) => {
+        server.listen(config.ListenPort, (err) => {
             if (err) throw err;
-            console.log(`> Ready on http://localhost:${port}`);
+            console.log(`> Ready on http://localhost:${config.ListenPort}`);
         });
     })
 

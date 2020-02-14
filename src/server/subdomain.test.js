@@ -1,33 +1,48 @@
-import hasValidSubdomain, { extractSubdomain } from "./subdomain";
+import { extractSubdomain, hasValidSubdomainConfigurable } from "./subdomain";
 
-beforeAll(() => {
-    process.env.APP_EXPOSER_HEADER = "app-exposer";
-    process.env.INGRESS = "http://localhost:8082";
-    process.env.DB = "postgres://user:password@host:port/db";
-    process.env.VICE_DOMAIN = "https://cyverse.run:4343";
-});
+const testSubdomain = "https://cyverse.run:4343";
 
-describe("hasValidSubdomain", () => {
+describe("hasValidSubdomainConfigurable", () => {
     test("valid subdomain", () => {
-        expect(hasValidSubdomain("https://afoo.cyverse.run:4343")).toBe(true);
+        expect(
+            hasValidSubdomainConfigurable(
+                "https://afoo.cyverse.run:4343",
+                testSubdomain
+            )
+        ).toBe(true);
     });
     test("does not start with a", () => {
-        expect(hasValidSubdomain("foo.cyverse.run:4343")).toBe(false);
+        expect(
+            hasValidSubdomainConfigurable("foo.cyverse.run:4343", testSubdomain)
+        ).toBe(false);
     });
     test("starts with www", () => {
-        expect(hasValidSubdomain("www.cyverse.run:4343")).toBe(false);
+        expect(
+            hasValidSubdomainConfigurable("www.cyverse.run:4343", testSubdomain)
+        ).toBe(false);
     });
     test("no subdomain", () => {
-        expect(hasValidSubdomain("cyverse.run:4343")).toBe(false);
+        expect(
+            hasValidSubdomainConfigurable("cyverse.run:4343", testSubdomain)
+        ).toBe(false);
     });
     test("no port", () => {
-        expect(hasValidSubdomain("cyverse.run")).toBe(false);
+        expect(
+            hasValidSubdomainConfigurable("cyverse.run", testSubdomain)
+        ).toBe(false);
     });
     test("nonsense that sort of looks like a host", () => {
-        expect(hasValidSubdomain("argle.bargle")).toBe(false);
+        expect(
+            hasValidSubdomainConfigurable("argle.bargle", testSubdomain)
+        ).toBe(false);
     });
     test("subdomain with a . in it", () => {
-        expect(hasValidSubdomain("afoo.bar.cyverse.run:4343")).toBe(true);
+        expect(
+            hasValidSubdomainConfigurable(
+                "afoo.bar.cyverse.run:4343",
+                testSubdomain
+            )
+        ).toBe(true);
     });
 });
 

@@ -1,4 +1,5 @@
 import url from "url";
+import * as config from "./configuration";
 
 const fetch = require("node-fetch");
 const debug = require("debug")("ingress");
@@ -13,12 +14,12 @@ export class IngressError extends Error {
 // Fetches K8s Endpoint information about the subdomain from the app-exposer
 // service, returns a promise with the response body parsed as JSON.
 export async function endpointConfig(subdomain) {
-    let endpointAPI = new url.URL(process.env.INGRESS);
+    let endpointAPI = new url.URL(config.Ingress);
     endpointAPI.pathname = `/endpoint/${subdomain}`;
 
     const reqOptions = {
         headers: {
-            Host: process.env.APP_EXPOSER_HEADER,
+            Host: config.AppExposerHeader,
         },
     };
     debug(
@@ -36,13 +37,10 @@ export async function endpointConfig(subdomain) {
 
 // Returns true if an ingress exists for the subdomain passed in.
 export async function ingressExists(subdomain) {
-    const ingressAPI = new url.URL(
-        `/ingress/${subdomain}`,
-        process.env.INGRESS
-    );
+    const ingressAPI = new url.URL(`/ingress/${subdomain}`, config.Ingress);
     const reqOptions = {
         headers: {
-            Host: process.env.APP_EXPOSER_HEADER,
+            Host: config.AppExposerHeader,
         },
     };
     debug(

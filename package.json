@@ -12,7 +12,9 @@
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "format": "prettier --write './**/*.js'",
     "lint": "eslint --max-warnings=0 ./src/",
-    "clean": "rimraf ./.next ./dist ./generated-docs"
+    "clean": "rimraf ./.next ./dist ./generated-docs",
+    "test" : "cross-env NODE_ENV=development jest",
+    "test-watch" : "cross-env NODE_ENV=development jest --watch"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

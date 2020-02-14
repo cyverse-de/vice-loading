@@ -2,6 +2,7 @@
 //
 // Requires the DB environment variable to be set to the connection string for
 // the DE database. See ../.env.example for the format.
+import * as config from "./configuration";
 
 const initOptions = {};
 const pgp = require("pg-promise")(initOptions);
@@ -10,8 +11,7 @@ let db;
 
 export function getDB() {
     if (db === undefined || db === null) {
-        const cn = process.env.DB;
-        db = pgp(cn);
+        db = pgp(config.DB);
     }
     return db;
 }
