@@ -5,18 +5,18 @@
   "private": true,
   "scripts": {
     "start": "npm run server",
-    "server": "node start-server.js",
-    "port-forward": "concurrently \"node port-forward-redis.js\" \"node port-forward-apps.js\"",
+    "server": "cd server && npm run start",
+    "port-forward": "kubectl port-forward service/app-exposer 8083:80",
     "dev": "run-s build-all dev-server",
-    "dev-server": "concurrently \"npm run port-forward\" \"node start-server.js\"",
-    "build-server": "node build-server.js",
-    "build-loading": "node build-loading-ui.js",
+    "dev-server": "concurrently \"npm run port-forward\" \"npm run server\"",
+    "build-server": "cd server && npm run build",
+    "build-loading": "cd client-loading && npm run build",
     "build-all": "run-s clean build-server build-loading",
-    "install-server": "node install-server.js",
-    "install-loading": "node install-loading.js",
+    "install-server": "cd server && npm install",
+    "install-loading": "cd client-loading && npm install",
     "install-all": "run-p install-server install-loading",
     "clean": "concurrently \"rimraf server/build\" \"rimraf client-loading/build\"",
-    "test": "concurrently \"node test-server.js\""
+    "test": "cd server && npm run test"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
