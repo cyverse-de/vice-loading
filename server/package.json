@@ -39,6 +39,9 @@
       "no-unused-vars": 1
     }
   },
+  "optionalDependencies": {
+    "fsevents": "^1.2.11"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "add-subtract-date": "^1.0.14",
