@@ -6,3 +6,4 @@ export const appExposerHeader = config.get("app_exposer_header");
 export const db = config.get("db");
 export const ingress = config.get("ingress");
 export const ui = config.get("ui");
+export const k8sEnabled = config.get("k8s_enabled") === 'true';

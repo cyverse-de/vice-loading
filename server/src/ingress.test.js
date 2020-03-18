@@ -1,111 +1,111 @@
-const nock = require('nock');
+const nock = require("nock");
 
-import { endpointConfig, ingressExists, IngressError} from './ingress';
+import { endpointConfig, ingressExists, IngressError } from "./ingress";
 
-beforeAll(() => {
-  process.env.APP_EXPOSER_HEADER = "app-exposer";
-  process.env.INGRESS = "http://localhost:8082";
-  process.env.DB = "postgres://user:password@host:port/db";
-  process.env.VICE_DOMAIN = "https://cyverse.run:4343";
-  process.env.INGRESS= "http://localhost:8082";
-});
+const APP_EXPOSER_HEADER = "app-exposer";
+// const DB = "postgres://user:password@host:port/db";
+// const VICE_DOMAIN = "https://cyverse.run:4343";
+const INGRESS = "http://localhost:8082";
+
 afterEach(nock.cleanAll);
 
-describe('endpointConfig', () => {
-  test('endpointConfig with JSON response', async () => {
+describe("endpointConfig", () => {
+  test("endpointConfig with JSON response", async () => {
     const respObj = {
-      "IP": "127.0.0.1",
-      "Port": 1247
+      IP: "127.0.0.1",
+      Port: 1247
     };
 
-    nock(process.env.INGRESS, {
+    nock(INGRESS, {
       reqheaders: {
-        'host' : process.env.APP_EXPOSER_HEADER
+        host: APP_EXPOSER_HEADER
       }
     })
-    .get(`/endpoint/afoo`)
-    .reply(200, respObj);
+      .get(`/endpoint/afoo`)
+      .reply(200, respObj);
 
-    const config = await endpointConfig('afoo');
+    const config = await endpointConfig("afoo", INGRESS, APP_EXPOSER_HEADER);
 
     expect(config).toEqual(respObj);
   });
 
-  test('endpointConfig with error', async () => {
+  test("endpointConfig with error", async () => {
     const respObj = {
-      "IP": "127.0.0.1",
-      "Port": 1247
+      IP: "127.0.0.1",
+      Port: 1247
     };
 
-    const error = 'this is an error';
+    const error = "this is an error";
 
-    nock(process.env.INGRESS, {
+    nock(INGRESS, {
       reqheaders: {
-        'host' : process.env.APP_EXPOSER_HEADER
+        host: APP_EXPOSER_HEADER
       }
     })
-    .get(`/endpoint/afoo`)
-    .replyWithError(error);
+      .get(`/endpoint/afoo`)
+      .replyWithError(error);
 
     expect.assertions(1);
-    return endpointConfig('afoo').catch(e => expect(e.message).toMatch('this is an error'));
-  })
+    return endpointConfig("afoo", INGRESS, APP_EXPOSER_HEADER).catch(e =>
+      expect(e.message).toMatch("this is an error")
+    );
+  });
 });
 
-describe('ingressExists', () => {
-  test('ingressExists returns true', async () => {
+describe("ingressExists", () => {
+  test("ingressExists returns true", async () => {
     const respObj = {
-      "this" : "could be",
-      "anything" : "really"
+      this: "could be",
+      anything: "really"
     };
 
-    nock(process.env.INGRESS, {
+    nock(INGRESS, {
       reqheaders: {
-        'host' : process.env.APP_EXPOSER_HEADER
+        host: APP_EXPOSER_HEADER
       }
     })
-    .get(`/ingress/afoo`)
-    .reply(200, respObj);
+      .get(`/ingress/afoo`)
+      .reply(200, respObj);
 
-    const retval = await ingressExists('afoo');
+    const retval = await ingressExists("afoo", INGRESS, APP_EXPOSER_HEADER);
 
     expect(retval).toEqual(true);
   });
 
-  test('ingresssExists with error raised from fetch', async () => {
+  test("ingresssExists with error raised from fetch", async () => {
     const respObj = {
-      "this" : "could be",
-      "anything" : "really"
+      this: "could be",
+      anything: "really"
     };
 
-    nock(process.env.INGRESS, {
+    nock(INGRESS, {
       reqheaders: {
-        'host' : process.env.APP_EXPOSER_HEADER
+        host: APP_EXPOSER_HEADER
       }
     })
-    .get(`/ingress/afoo`)
-    .replyWithError(respObj);
+      .get(`/ingress/afoo`)
+      .replyWithError(respObj);
 
-    const retval = await ingressExists('afoo');
+    const retval = await ingressExists("afoo", INGRESS, APP_EXPOSER_HEADER);
 
     expect(retval).toEqual(false);
   });
 
-  test('ingresssExists with error raised from fetch', async () => {
+  test("ingresssExists with error raised from fetch", async () => {
     const respObj = {
-      "this" : "could be",
-      "anything" : "really"
+      this: "could be",
+      anything: "really"
     };
 
-    nock(process.env.INGRESS, {
+    nock(INGRESS, {
       reqheaders: {
-        'host' : process.env.APP_EXPOSER_HEADER
+        host: APP_EXPOSER_HEADER
       }
     })
-    .get(`/ingress/afoo`)
-    .reply(404, respObj);
+      .get(`/ingress/afoo`)
+      .reply(404, respObj);
 
-    const retval2 = await ingressExists('afoo');
+    const retval2 = await ingressExists("afoo", INGRESS, APP_EXPOSER_HEADER);
 
     expect(retval2).toEqual(false);
   });

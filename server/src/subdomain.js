@@ -1,12 +1,12 @@
-import url from 'url';
-
-const debug = require('debug')('subdomain');
+import url from "url";
+import * as config from "./configuration";
+const debug = require("debug")("subdomain");
 
 // escapeRegExp will escape a string so that it can be safely interpolated into
 // a regular expression string as a literal string. Taken from:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 // We're calling this here so that it only gets called once, avoiding creating
@@ -16,11 +16,12 @@ function escapeRegExp(string) {
 // getSubdomainRegex will construct a RegExp object that can be used to tell if
 // a subdomain is included in the string it's applied to. Uses the VICE_DOMAIN
 // environment variable.
-function getSubdomainRegex() {
-  const viceURL = new url.URL(process.env.VICE_DOMAIN);
+function getSubdomainRegex(domain = config.viceDomain) {
+  const viceURL = new url.URL(domain);
   const viceDomain = escapeRegExp(viceURL.host);
   debug(`getSubdomainRegex: escaped VICE_DOMAIN: ${viceDomain}`);
-  return new RegExp(`(a.*\.)?${viceDomain}(:[0-9]+)?`);
+  const regexString = `(a.*\.)?${viceDomain}(:[0-9]+)?`; /* eslint-disable-line */
+  return new RegExp(regexString);
 }
 
 export function extractSubdomain(urlWithSubdomain) {
@@ -32,7 +33,7 @@ export function extractSubdomain(urlWithSubdomain) {
   if (fields.length < 2) {
     throw new Error(`no subdomain found in ${urlWithSubdomain}`);
   }
-  if (fields.length === 2 && fields[0] === 'www') {
+  if (fields.length === 2 && fields[0] === "www") {
     debug(`extractSubdomain; URL: ${urlWithSubdomain}; return ''`);
     return "";
   }
@@ -43,14 +44,13 @@ export function extractSubdomain(urlWithSubdomain) {
 
 // hasValidSubdomain checks to see if the `str` parameter contains a subdomain
 // and is part of the configured VICE_DOMAIN.
-export default function hasValidSubdomain(str) {
-  const fields = getSubdomainRegex().exec(str);
-  const isValid = (
+export default function hasValidSubdomain(str, viceDomain = config.viceDomain) {
+  const fields = getSubdomainRegex(viceDomain).exec(str);
+  const isValid =
     fields !== null &&
     fields.length >= 2 &&
     fields[0] !== undefined &&
-    fields[1] !== undefined
-  );
+    fields[1] !== undefined;
   debug(`hasValidSubdomain; input: ${str}; result: ${isValid}`);
   return isValid;
 }

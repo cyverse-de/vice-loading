@@ -9,9 +9,10 @@ import morgan from 'morgan';
 import path from 'path';
 import url from 'url';
 
+import * as config from "./configuration";
+
 const fetch = require('node-fetch');
 const debug = require('debug')('app');
-const dateFunc = require("add-subtract-date");
 
 const db = getDB();
 
@@ -46,7 +47,7 @@ apirouter.get("/url-ready", async (req, res) => {
   let ready = false;
 
   // k8s disabled
-  if (process.env.K8S_ENABLED === "" || process.env.K8S_ENABLED === "0") {
+  if (!config.k8sEnabled) {
     ready = await ingressExists(subdomain);
     let endpoint;
 
@@ -72,7 +73,10 @@ apirouter.get("/url-ready", async (req, res) => {
         }
         return false;
       })
-      .catch(e => false);
+      .catch(e => {
+        console.log(e);
+        return false;
+      });
     }
 
     debug(`url-ready; URL: ${urlToCheck}; ready after fetching URL: ${ready}`);
@@ -87,20 +91,17 @@ apirouter.get("/url-ready", async (req, res) => {
         debug(`url-ready; URL: ${urlToCheck}; endpoint: http://${endpoint.IP}:${endpoint.Port}/url-ready; fetch endpoint response: ${data}`);
         return data;
       })
-      .catch(e => false);
+      .catch(e => {
+        console.log(e);
+        return false;
+      });
     }
 
     debug(`url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`);
   } else {
     // K8s enabled
 
-    const viceAPI = new url.URL(`/vice/${subdomain}/url-ready`, process.env.INGRESS);
-    const reqOptions = {
-      headers: {
-        "Host" : process.env.APP_EXPOSER_HEADER
-      }
-    };
-
+    const viceAPI = new url.URL(`/vice/${subdomain}/url-ready`, config.ingress);
     ready = await fetch(viceAPI , {
       "redirect": "manual"
     })
@@ -110,7 +111,10 @@ apirouter.get("/url-ready", async (req, res) => {
       debug(`url-ready; URL: ${viceAPI}; ${data}`);
       return data;
     })
-    .catch(e => false);
+    .catch(e => {
+      console.log(e);
+      return false;
+    });
   }
 
   res.setHeader('Content-Type', 'application/json');
