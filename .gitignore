@@ -11,6 +11,8 @@ interapps-landing
 **/.env
 **/dist
 **/build
+local.yaml
+local.yml
 
 # dependencies
 **/node_modules

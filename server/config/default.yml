@@ -1,0 +1,7 @@
+listen_port: 60000
+vice_domain: https://not-a-real-domain-hopefully.com
+app_exposer_header: app-exposer
+db: postgres://user:password@host:port/database
+ingress: http://localhost:8083
+ui: ../../client-landing/build
+k8s_enabled: true

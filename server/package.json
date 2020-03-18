@@ -4,6 +4,9 @@
   "description": "The server-side component for the VICE UIs.",
   "license": "BSD-3-Clause",
   "repository": "https://github.com/cyverse-de/interapps-landing",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "main": "src/index.js",
   "scripts": {
     "start": "node -r dotenv/config build/index.js",
@@ -13,31 +16,24 @@
     "test": "jest",
     "watch-test": "jest --watch"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ]
-    ]
-  },
   "eslintConfig": {
     "extends": "eslint:recommended",
     "parserOptions": {
-      "ecmaVersion": 7,
+      "ecmaVersion": 2020,
       "sourceType": "module"
     },
     "env": {
-      "node": true
+      "node": true,
+      "es6": true,
+      "es2017": true,
+      "es2020": true,
+      "jest": true
     },
     "rules": {
       "no-console": 0,
       "no-unused-vars": 1
-    }
+    },
+    "plugins": ["jest"]
   },
   "optionalDependencies": {
     "fsevents": "^1.2.11"
@@ -47,10 +43,10 @@
     "add-subtract-date": "^1.0.14",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
+    "config": "^3.3.0",
     "connect-pg-simple": "^6.0.1",
     "cors": "^2.8.5",
     "debug": "^4.1.0",
-    "eslint": "^6.8.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "helmet": "^3.21.2",
@@ -69,6 +65,10 @@
     "babel-jest": "^25.1.0",
     "client-oauth2": "^4.2.3",
     "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-flowtype": "^3.13.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.1.0",
     "nock": "^12.0.3",
     "nodemon": "^2.0.2",
