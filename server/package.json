@@ -24,16 +24,8 @@
     },
     "env": {
       "node": true,
-      "es6": true,
-      "es2017": true,
-      "es2020": true,
       "jest": true
-    },
-    "rules": {
-      "no-console": 0,
-      "no-unused-vars": 1
-    },
-    "plugins": ["jest"]
+    }
   },
   "optionalDependencies": {
     "fsevents": "^1.2.11"
