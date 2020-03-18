@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { checkURLReady } from '../actions';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { checkURLReady } from "../actions";
+import { connect } from "react-redux";
 
 // Adapted from https://medium.com/@machadogj/timers-in-react-with-redux-apps-9a5a722162e8
 
@@ -16,7 +16,7 @@ class TickerElement extends Component {
 
   componentDidMount() {
     let timer = setInterval(this.tickCallback(), 10000);
-    this.setState({timer});
+    this.setState({ timer });
   }
 
   componentWillUnmount() {
@@ -26,7 +26,7 @@ class TickerElement extends Component {
   tickCallback() {
     return () => {
       this.props.store.dispatch(checkURLReady());
-    }
+    };
   }
 
   render() {
@@ -41,8 +41,6 @@ const mapStateToProps = state => ({
   isReady: state.ready
 });
 
-const Ticker = connect(
-  mapStateToProps
-)(TickerElement);
+const Ticker = connect(mapStateToProps)(TickerElement);
 
 export default Ticker;

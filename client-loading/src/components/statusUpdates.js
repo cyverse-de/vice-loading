@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 //import { addUpdate, setSubdomain, setJob } from '../actions';
-
 
 class StatusUpdate extends Component {
   render() {
-    return <li>{this.props.status} - {this.props.message}</li>;
+    return (
+      <li>
+        {this.props.status} - {this.props.message}
+      </li>
+    );
   }
 }
 

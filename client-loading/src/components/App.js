@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import LoadingFeedbackArea from './loadingFeedback';
-import Ticker from './ticker';
-import logo from '../images/logo.png';
-import loadingRocket from '../images/loading.png';
-import '../css/App.css';
-
+import LoadingFeedbackArea from "./loadingFeedback";
+import Ticker from "./ticker";
+import logo from "../images/logo.png";
+import loadingRocket from "../images/loading.png";
+import "../css/App.css";
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +22,11 @@ class App extends Component {
 
         <h1 className="welcome">Welcome!</h1>
 
-        <img src={loadingRocket} className="loading" alt="Loading rocket for an in-progress job" />
+        <img
+          src={loadingRocket}
+          className="loading"
+          alt="Loading rocket for an in-progress job"
+        />
 
         <LoadingFeedbackArea />
 
@@ -36,7 +39,7 @@ class App extends Component {
     window.location.reload(true);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     // Set a title on the page
     document.title = "CyVerse VICE Apps";
   }

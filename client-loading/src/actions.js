@@ -1,15 +1,14 @@
-import { createActions, handleActions } from 'redux-actions';
-import axios from 'axios';
+import { createActions, handleActions } from "redux-actions";
+import axios from "axios";
 
 const defaultState = {
-  subdomain: '', // The VICE subdomain we're working with.
-  job: '',       // The job UUID from the database.
+  subdomain: "", // The VICE subdomain we're working with.
+  job: "", // The job UUID from the database.
   ready: false,
 
   // entities contains the objects retrieved from the server stored in a map
   // for easy reference in other objects.
-  entities : {
-
+  entities: {
     // updates contains the job status updates returned by the server. An
     // individual status update looks like the following:
     // {
@@ -17,43 +16,52 @@ const defaultState = {
     //   message: '', the actual message from the job
     //   sentOn: ''   the date the message was sent, as milliseconds since the epoch
     // }
-    updates: {},
+    updates: {}
   }
-}
+};
 
 // Synchronous actions.
-export const { addUpdate, setSubdomain, getJob, setJob, setReady } = createActions({
-  ADD_UPDATE:      (update = {})    => update,
-  SET_SUBDOMAIN:   (subdomain = '') => subdomain,
-  GET_JOB:         (subdomain = '') => subdomain,
-  SET_JOB:         (job = '')       => job,
-  SET_READY:       (ready = false)  => ready
+export const {
+  addUpdate,
+  setSubdomain,
+  getJob,
+  setJob,
+  setReady
+} = createActions({
+  ADD_UPDATE: (update = {}) => update,
+  SET_SUBDOMAIN: (subdomain = "") => subdomain,
+  GET_JOB: (subdomain = "") => subdomain,
+  SET_JOB: (job = "") => job,
+  SET_READY: (ready = false) => ready
 });
-
 
 // Async actions that dispatch actions defined above, so it needs to be set up
 // separately.
 export let fetchUpdates = () => {
   return dispatch => {
     let searchParams = new URLSearchParams(window.location.search);
-    return axios.get(`/api/jobs/status-updates?url=${searchParams.get('url')}`).then(
-      response => response.data.job_status_updates.forEach(i => dispatch(addUpdate(i)))
-    ).catch(function(error) {
-      console.log('error from server: ', error.message);
-    });
+    return axios
+      .get(`/api/jobs/status-updates?url=${searchParams.get("url")}`)
+      .then(response =>
+        response.data.job_status_updates.forEach(i => dispatch(addUpdate(i)))
+      )
+      .catch(function(error) {
+        console.log("error from server: ", error.message);
+      });
   };
-}
+};
 
 export const checkURLReady = () => {
   return dispatch => {
     let searchParams = new URLSearchParams(window.location.search);
-    return axios.get(`/api/url-ready?url=${searchParams.get('url')}`).then(
-      response => dispatch(setReady(response.data.ready))
-    ).catch(function(error) {
-      console.log('error from server: ', error.message);
-    });
+    return axios
+      .get(`/api/url-ready?url=${searchParams.get("url")}`)
+      .then(response => dispatch(setReady(response.data.ready)))
+      .catch(function(error) {
+        console.log("error from server: ", error.message);
+      });
   };
-}
+};
 
 export const reducer = handleActions(
   {
@@ -83,4 +91,4 @@ export const reducer = handleActions(
     }
   },
   defaultState
-)
+);
