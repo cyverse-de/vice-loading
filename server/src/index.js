@@ -12,6 +12,7 @@ import noCache from "nocache";
 import morgan from "morgan";
 import path from "path";
 import urlReadyHandler from "./urlReady";
+import statusInfoHandler from "./statusInfo";
 
 const db = getDB();
 
@@ -38,6 +39,7 @@ const apirouter = express.Router();
 apirouter.use(noCache());
 
 apirouter.get("/url-ready", urlReadyHandler);
+apirouter.get("/status-info", statusInfoHandler);
 
 app.use("/api", apirouter);
 

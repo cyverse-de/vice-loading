@@ -92,7 +92,10 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
  * @returns {Boolean}
  */
 const k8sEnabled = async subdomain => {
-  const viceAPI = new url.URL(`/vice/${subdomain}/url-ready`, config.ingress);
+  const viceAPI = new url.URL(
+    `/vice/${subdomain}/url-ready`,
+    config.appExposerURL
+  );
 
   let ready = await fetch(viceAPI, {
     redirect: "manual"

@@ -15,23 +15,16 @@ export class IngressError extends Error {
 // service, returns a promise with the response body parsed as JSON.
 export function endpointConfig(
   subdomain,
-  ingress = config.ingress,
-  hostHeader = config.appExposerHeader
+  appExposerURL = config.appExposerURL
 ) {
-  let endpointAPI = new url.URL(ingress);
+  let endpointAPI = new url.URL(appExposerURL);
   endpointAPI.pathname = `/endpoint/${subdomain}`;
-
-  const reqOptions = {
-    headers: {
-      Host: hostHeader
-    }
-  };
 
   debug(
     `fetching endpoint config from ${endpointAPI.toString()} for ${subdomain}`
   );
 
-  return fetch(endpointAPI.toString(), reqOptions).then(response => {
+  return fetch(endpointAPI.toString()).then(response => {
     debug(
       `response from ${endpointAPI.toString()} for ${subdomain}: ${
         response.status
@@ -44,17 +37,13 @@ export function endpointConfig(
 // Returns true if an ingress exists for the subdomain passed in.
 export async function ingressExists(
   subdomain,
-  ingress = config.ingress,
-  hostHeader = config.appExposerHeader
+  appExposerURL = config.appExposerURL
 ) {
-  const ingressAPI = new url.URL(`/ingress/${subdomain}`, ingress);
-  const reqOptions = {
-    headers: {
-      Host: hostHeader
-    }
-  };
+  const ingressAPI = new url.URL(`/ingress/${subdomain}`, appExposerURL);
+
   debug(`ingress check; subdomain: ${subdomain}; api ${ingressAPI.toString()}`);
-  return fetch(ingressAPI.toString(), reqOptions)
+
+  return fetch(ingressAPI.toString())
     .then(response => {
       if (response.ok) {
         return true;
@@ -68,6 +57,7 @@ export async function ingressExists(
       return value;
     })
     .catch(e => {
+      debug(e);
       return false;
     });
 }
