@@ -12,8 +12,7 @@ import url from "url";
 import hasValidSubdomain, { extractSubdomain } from "./subdomain";
 import { ingressExists, endpointConfig } from "./ingress";
 import * as config from "./configuration";
-
-const debug = require("debug")("app");
+import log from "./logging";
 
 /**
  * Handles the url-ready logic when running VICE outside of k8s. Returns whether
@@ -27,16 +26,18 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
   let ready = await ingressExists(subdomain);
   let endpoint;
 
-  debug(`url-ready; URL: ${urlToCheck}; ready after ingress check: ${ready}`);
+  log.debug(
+    `url-ready; URL: ${urlToCheck}; ready after ingress check: ${ready}`
+  );
 
   if (ready) {
     endpoint = await endpointConfig(subdomain).catch(e => {
-      debug(`url-ready: URL: ${urlToCheck}; endpoint config error: ${e}`);
+      log.error(`url-ready: URL: ${urlToCheck}; endpoint config error: ${e}`);
       ready = false;
     });
   }
 
-  debug(
+  log.debug(
     `url-ready; URL: ${urlToCheck}; ready after fetching endpoint config: ${ready}`
   );
 
@@ -45,19 +46,23 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
       redirect: "manual"
     })
       .then(resp => {
-        debug(`url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`);
+        log.debug(
+          `url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`
+        );
         if (resp.status >= 200 && resp.status < 400) {
           return true;
         }
         return false;
       })
       .catch(e => {
-        console.log(e);
+        log.error(e.message);
         return false;
       });
   }
 
-  debug(`url-ready; URL: ${urlToCheck}; ready after fetching URL: ${ready}`);
+  log.debug(
+    `url-ready; URL: ${urlToCheck}; ready after fetching URL: ${ready}`
+  );
 
   if (ready) {
     ready = await fetch(`http://${endpoint.IP}:${endpoint.Port}/url-ready`, {
@@ -66,18 +71,18 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
       .then(resp => resp.json())
       .then(data => data["ready"])
       .then(data => {
-        debug(
+        log.debug(
           `url-ready; URL: ${urlToCheck}; endpoint: http://${endpoint.IP}:${endpoint.Port}/url-ready; fetch endpoint response: ${data}`
         );
         return data;
       })
       .catch(e => {
-        console.log(e);
+        log.error(e.message);
         return false;
       });
   }
 
-  debug(
+  log.debug(
     `url-ready; URL: ${urlToCheck}; ready after fetching endpoint: ${ready}`
   );
 
@@ -100,14 +105,21 @@ const k8sEnabled = async subdomain => {
   let ready = await fetch(viceAPI, {
     redirect: "manual"
   })
+    .then(async resp => {
+      if (resp.ok) {
+        return resp;
+      }
+      const msg = await resp.text();
+      throw new Error(msg);
+    })
     .then(resp => resp.json())
     .then(data => data["ready"])
     .then(data => {
-      debug(`url-ready; URL: ${viceAPI}; ${data}`);
+      log.debug(`url-ready; URL: ${viceAPI}; ${data}`);
       return data;
     })
     .catch(e => {
-      console.log(e);
+      log.error(e.message);
       return false;
     });
 
@@ -126,15 +138,15 @@ const urlReadyHandler = async (req, res) => {
 
   let ready = false;
 
-  debug(`url-ready; URL: ${urlToCheck}`);
+  log.debug(`url-ready; URL: ${urlToCheck}`);
 
   if (!hasValidSubdomain(urlToCheck)) {
-    debug(`url-ready; URL: ${urlToCheck}; hasValidSubdomain: false`);
+    log.debug(`url-ready; URL: ${urlToCheck}; hasValidSubdomain: false`);
     ready = false;
   }
 
   const subdomain = extractSubdomain(urlToCheck);
-  debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
+  log.debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
 
   if (!config.k8sEnabled) {
     ready = await k8sDisabled(subdomain, urlToCheck);

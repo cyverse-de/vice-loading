@@ -5,3 +5,6 @@ ui: ../../client-landing/build
 k8s_enabled: true
 app_exposer:
   url: http://app-exposer
+log:
+  level: info
+  label: vice-loading
