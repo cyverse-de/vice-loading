@@ -124,26 +124,29 @@ const k8sEnabled = async subdomain => {
 const urlReadyHandler = async (req, res) => {
   const urlToCheck = req.query.url;
 
+  let ready = false;
+
   debug(`url-ready; URL: ${urlToCheck}`);
 
   if (!hasValidSubdomain(urlToCheck)) {
     debug(`url-ready; URL: ${urlToCheck}; hasValidSubdomain: false`);
-    throw new Error(`no valid subdomain found in ${urlToCheck}`);
+    ready = false;
   }
 
   const subdomain = extractSubdomain(urlToCheck);
   debug(`url-ready; URL: ${urlToCheck}; subdomain: ${subdomain}`);
 
-  let ready = false;
-
   if (!config.k8sEnabled) {
-    ready = k8sDisabled(subdomain, urlToCheck);
+    ready = await k8sDisabled(subdomain, urlToCheck);
   } else {
-    ready = k8sEnabled(subdomain);
+    ready = await k8sEnabled(subdomain);
   }
 
+  console.log(`subdomain: ${subdomain}`);
+  console.log(`ready: ${ready}`);
+
   res.setHeader("Content-Type", "application/json");
-  res.send(JSON.stringify({ ready: ready }));
+  res.send(JSON.stringify({ ready }));
 };
 
 export default urlReadyHandler;
