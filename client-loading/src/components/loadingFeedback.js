@@ -1,48 +1,39 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react";
 
-class LoadingDots extends Component {
-  render() {
-    return (
-      <div>
-        <div className="analysisMessage">
-          Please wait while we launch your application.
-        </div>
-
-        <div className="loading-dots">
-          <div className="loading-dots--dot"></div>
-          <div className="loading-dots--dot"></div>
-          <div className="loading-dots--dot"></div>
-        </div>
+const LoadingDots = () => {
+  return (
+    <div>
+      <div className="analysisMessage">
+        Please wait while we launch your application.
       </div>
-    );
+
+      <div className="loading-dots">
+        <div className="loading-dots--dot"></div>
+        <div className="loading-dots--dot"></div>
+        <div className="loading-dots--dot"></div>
+      </div>
+    </div>
+  );
+};
+
+const LoadingFeedback = ({ ready }) => {
+  let feedback;
+
+  console.log(ready);
+
+  if (ready) {
+    //window.location.href = getAppURL();
+    console.log(getAppURL());
+  } else {
+    feedback = <LoadingDots />;
   }
-}
 
-class LoadingFeedback extends Component {
-  render() {
-    let feedback;
-
-    if (this.props.isReady) {
-      window.location.href = this.props.appURL;
-    } else {
-      feedback = <LoadingDots />;
-    }
-
-    return <div className="loading-feedback">{feedback}</div>;
-  }
-}
+  return <div className="loading-feedback">{feedback}</div>;
+};
 
 const getAppURL = () => {
-  let searchParams = new URLSearchParams(window.location.search);
+  const searchParams = new URLSearchParams(window.location.search);
   return searchParams.get("url");
 };
 
-const mapStateToProps = state => ({
-  isReady: state.ready,
-  appURL: getAppURL()
-});
-
-const LoadingFeedbackArea = connect(mapStateToProps)(LoadingFeedback);
-
-export default LoadingFeedbackArea;
+export default LoadingFeedback;
