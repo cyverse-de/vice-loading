@@ -22,8 +22,7 @@ const LoadingFeedback = ({ ready }) => {
   console.log(ready);
 
   if (ready) {
-    //window.location.href = getAppURL();
-    console.log(getAppURL());
+    window.location.href = getAppURL();
   } else {
     feedback = <LoadingDots />;
   }
