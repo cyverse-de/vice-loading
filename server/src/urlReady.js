@@ -142,9 +142,6 @@ const urlReadyHandler = async (req, res) => {
     ready = await k8sEnabled(subdomain);
   }
 
-  console.log(`subdomain: ${subdomain}`);
-  console.log(`ready: ${ready}`);
-
   res.setHeader("Content-Type", "application/json");
   res.send(JSON.stringify({ ready }));
 };
