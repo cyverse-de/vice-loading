@@ -39,7 +39,7 @@ const apirouter = express.Router();
 apirouter.use(noCache());
 
 apirouter.get("/url-ready", urlReadyHandler);
-apirouter.get("/status-info", statusInfoHandler);
+apirouter.get("/status", statusInfoHandler);
 
 app.use("/api", apirouter);
 
