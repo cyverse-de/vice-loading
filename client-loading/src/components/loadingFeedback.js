@@ -32,6 +32,34 @@ const Statuses = ({ data }) => {
     ];
   }
 
+  if (data.pods.length > 0) {
+    if (data.pods[0].phase !== "Running") {
+      const pod = data.pods[0];
+      statuses = [
+        <div className="analysisMessage">Kubernetes pod phase: {pod.phase}</div>
+      ];
+
+      if (pod.message !== "") {
+        statuses = [
+          ...statuses,
+          <div className="analysisMessage">Message: {pod.message}</div>
+        ];
+      }
+
+      if (pod.reason !== "") {
+        statuses = [
+          ...statuses,
+          <div className="analysisMessage">Reason: {pod.reason}</div>
+        ];
+      }
+    } else {
+      statuses = [
+        ...statuses,
+        <div className="analysisMessage">Kubernetes pods created.</div>
+      ];
+    }
+  }
+
   if (statuses.length === 0) {
     statuses = [
       <div className="analysisMessage">
