@@ -1,71 +1,57 @@
 import React from "react";
 import { useQuery } from "react-query";
 
+const Msg = ({ text }) => {
+  return <div className="analysisMessage">{text}</div>;
+};
+
 const Statuses = ({ data }) => {
   let statuses = [];
 
+  const addMsg = text => {
+    statuses = [...statuses, <Msg text={text} />];
+  };
+
+  const setMsg = text => {
+    statuses = [<Msg text={text} />];
+  };
+
   if (data.deployments.length > 0) {
-    statuses = [
-      ...statuses,
-      <div className="analysisMessage">Kubernetes Deployment created.</div>
-    ];
+    addMsg("Kubernetes Deployment created.");
   }
 
   if (data.services.length > 0) {
-    statuses = [
-      ...statuses,
-      <div className="analysisMessage">Kubernetes Service created.</div>
-    ];
+    addMsg("Kubernetes Service created.");
   }
 
   if (data.ingresses.length > 0) {
-    statuses = [
-      ...statuses,
-      <div className="analysisMessage">Kubernetes Ingress created.</div>
-    ];
+    addMsg("Kubernetes Ingress created.");
   }
 
   if (data.configMaps.length > 2) {
-    statuses = [
-      ...statuses,
-      <div className="analysisMessage">Kubernetes ConfigMaps created.</div>
-    ];
+    addMsg("Kubernetes ConfigMaps created.");
   }
 
   if (data.pods.length > 0) {
     if (data.pods[0].phase !== "Running") {
       const pod = data.pods[0];
-      statuses = [
-        <div className="analysisMessage">Kubernetes pod phase: {pod.phase}</div>
-      ];
+
+      setMsg(`Kubernetes pod phase: ${pod.phase}`);
 
       if (pod.message !== "") {
-        statuses = [
-          ...statuses,
-          <div className="analysisMessage">Message: {pod.message}</div>
-        ];
+        addMsg(`Message: ${pod.message}`);
       }
 
       if (pod.reason !== "") {
-        statuses = [
-          ...statuses,
-          <div className="analysisMessage">Reason: {pod.reason}</div>
-        ];
+        addMsg(`Reason: ${pod.reason}`);
       }
     } else {
-      statuses = [
-        ...statuses,
-        <div className="analysisMessage">Kubernetes pods created.</div>
-      ];
+      addMsg("Kubernetes pods created.");
     }
   }
 
   if (statuses.length === 0) {
-    statuses = [
-      <div className="analysisMessage">
-        No Kubernetes resources found for the analysis.
-      </div>
-    ];
+    setMsg("No Kubernetes resources found for the analysis.");
   }
 
   return <div className="loading-feedback">{statuses}</div>;
