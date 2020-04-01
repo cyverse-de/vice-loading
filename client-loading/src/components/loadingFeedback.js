@@ -4,8 +4,12 @@ import { useQuery } from "react-query";
 import loadingRocket from "../images/loading.png";
 import "../css/App.css";
 
-const Msg = ({ text }) => {
-  return <div className="analysisMessage">{text}</div>;
+const Msg = ({ text, errored = false }) => {
+  let classname = "message";
+  if (errored) {
+    classname = "messageError";
+  }
+  return <div className={classname}>{text}</div>;
 };
 
 const LoadingDots = () => {
@@ -21,12 +25,12 @@ const LoadingDots = () => {
 const LoadingFeedback = () => {
   let messages = [];
 
-  const addMsg = text => {
-    messages = [...messages, <Msg text={text} />];
+  const addMsg = (text, errored = false) => {
+    messages = [...messages, <Msg text={text} errored={errored} />];
   };
 
-  const setMsg = text => {
-    messages = [<Msg text={text} />];
+  const setMsg = (text, errored = false) => {
+    messages = [<Msg text={text} errored={errored} />];
   };
 
   const { status, data, error } = useQuery(
@@ -94,7 +98,8 @@ const LoadingFeedback = () => {
   }
 
   if (messages.length === 0) {
-    setMsg("No Kubernetes resources found for the analysis.");
+    setMsg("No Kubernetes resources found for the analysis.", true);
+    addMsg("Please contact support through the Discovery Environment.", true);
   }
 
   return (

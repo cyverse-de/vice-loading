@@ -22,12 +22,21 @@ header {
   height: 60px;
 }
 
-.welcome, .analysisMessage {
+.welcome, .message {
   color: #004471;
   display: block;
   font-size: 40px;
   margin-top: 3%;
   text-align:center;
+  width: 100%;
+}
+
+.messageError {
+  color: #AF0404;
+  display: block;
+  font-size: 40px;
+  margin-top: 3%;
+  text-align: center;
   width: 100%;
 }
 
