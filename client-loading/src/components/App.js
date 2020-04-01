@@ -7,11 +7,17 @@ import "../css/App.css";
 
 import { useQuery } from "react-query";
 
+const getAppURL = () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  return searchParams.get("url");
+};
+
 const App = () => {
   useEffect(() => {
     document.title = "CyVerse VICE Apps";
   });
 
+  // Checks to see if the analysis is actually live.
   const { status, data, error } = useQuery(
     "url-ready",
     async () => {
@@ -39,19 +45,18 @@ const App = () => {
     ready = data.ready;
   }
 
+  // Change the user's page to the running app.
+  if (ready) {
+    window.location.href = getAppURL();
+  }
+
   return (
     <div className="app">
       <header>
         <img src={logo} className="app-logo" alt="logo" />
       </header>
 
-      <h1 className="welcome">Welcome!</h1>
-
-      <img
-        src={loadingRocket}
-        className="loading"
-        alt="Loading rocket for an in-progress job"
-      />
+      <h1 className="welcome">Loading VICE analysis...</h1>
 
       <LoadingFeedback ready={ready} />
     </div>
