@@ -80,14 +80,16 @@ const LoadingFeedback = () => {
         if (data.pods[0].phase !== "Running") {
           const pod = data.pods[0];
 
-          addMsg(`Kubernetes pod phase: ${pod.phase}`);
+          const podErrored = pod.phase === "Failed" || pod.phase === "Unknown";
+
+          addMsg(`Kubernetes pod phase: ${pod.phase}`, podErrored);
 
           if (pod.message !== "") {
-            addMsg(`Message: ${pod.message}`);
+            addMsg(`Message: ${pod.message}`, podErrored);
           }
 
           if (pod.reason !== "") {
-            addMsg(`Reason: ${pod.reason}`);
+            addMsg(`Reason: ${pod.reason}`, podErrored);
           }
         } else {
           addMsg("Kubernetes pods created.");
