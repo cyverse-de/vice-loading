@@ -8,6 +8,16 @@ const Msg = ({ text }) => {
   return <div className="analysisMessage">{text}</div>;
 };
 
+const LoadingDots = () => {
+  return (
+    <div className="loading-dots">
+      <div className="loading-dots--dot" />
+      <div className="loading-dots--dot" />
+      <div className="loading-dots--dot" />
+    </div>
+  );
+};
+
 const LoadingFeedback = () => {
   let messages = [];
 
@@ -38,13 +48,7 @@ const LoadingFeedback = () => {
   switch (status) {
     case "loading":
       setMsg("Please wait while we launch your application.");
-      addMsg(
-        <div className="loading-dots">
-          <div className="loading-dots--dot" />
-          <div className="loading-dots--dot" />
-          <div className="loading-dots--dot" />
-        </div>
-      );
+      addMsg(<LoadingDots />);
       break;
 
     case "error":
@@ -83,6 +87,8 @@ const LoadingFeedback = () => {
           }
         } else {
           addMsg("Kubernetes pods created.");
+          addMsg("Waiting for app to respond...");
+          addMsg(<LoadingDots />);
         }
       }
   }
@@ -93,7 +99,7 @@ const LoadingFeedback = () => {
 
   return (
     <>
-      {messages.length <= 2 && (
+      {(messages.length <= 3 || status === "loading") && (
         <img
           src={loadingRocket}
           className="loading"
