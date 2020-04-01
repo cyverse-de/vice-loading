@@ -84,12 +84,19 @@ const LoadingFeedback = () => {
 
           addMsg(`Kubernetes pod phase: ${pod.phase}`, podErrored);
 
-          if (pod.message !== "") {
+          if (pod.message) {
             addMsg(`Message: ${pod.message}`, podErrored);
           }
 
-          if (pod.reason !== "") {
+          if (pod.reason) {
             addMsg(`Reason: ${pod.reason}`, podErrored);
+          }
+
+          if (podErrored) {
+            addMsg(
+              "Please contact support through the Discovery Environment.",
+              true
+            );
           }
         } else {
           addMsg("Kubernetes pods created.");
