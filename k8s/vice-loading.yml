@@ -23,112 +23,19 @@ spec:
             items:
               - key: timezone
                 path: timezone
+        - name: service-configs
+          secret:
+            secretName: service-configs
+            items:
+              - key: vice-loading.yaml
+                path: local.yaml
       containers:
       - name: vice-loading
         image: discoenv/vice-loading
         imagePullPolicy: Always
         env:
-          - name: K8S_ENABLED
-            value: "1"
-
-          - name: DEBUG
-            value: "*"
-
-          - name: VICE_DOMAIN
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_BASE_URL
-
-          - name: DE_HOST
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_DE_HOST
-
-          - name: DB
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_DE_DB
-
-          - name: UI
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_LOADING_PATH
-
-          - name: APP_EXPOSER_HEADER
-            value: app-exposer
-
-          - name: INGRESS
-            value: http://app-exposer
-
-          - name: REDIS_HOST
-            value: redis
-
-          - name: REDIS_PORT
-            value: "6379"
-
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_REDIS_PASSWORD
-
-          - name: APPS
-            value: http://apps/apps?app-type=Interactive&user=
-
-          - name: UUID_DOMAIN
-            value: "@iplantcollaborative.org"
-
-          - name: CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_CLIENT_ID
-
-          - name: CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_CLIENT_SECRET
-
-          - name: ACCESS_TOKEN_URI
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_ACCESS_TOKEN_URI
-
-          - name: AUTHORIZATION_URI
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_AUTHORIZATION_URI
-
-          - name: REDIRECT_URI
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_REDIRECT_URI
-
-          - name: SERVER_NAME
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_SERVER_NAME
-
-          - name: LOGOUT
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_LOGOUT
-
-          - name: PROFILE_URI
-            valueFrom:
-              secretKeyRef:
-                name: configs
-                key: VICE_PROFILE_URI
+          - name: NODE_CONFIG_DIR
+            value: "./config:/etc/iplant/de"
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
@@ -136,6 +43,9 @@ spec:
           - name: timezone
             mountPath: /etc/timezone
             subPath: timezone
+          - name: service-configs
+            mountPath: /etc/iplant/de
+            readOnly: true
         resources:
           requests:
             cpu: "1m"
