@@ -15,16 +15,16 @@ import hasValidSubdomain, { extractSubdomain } from "./subdomain";
 const debug = require("debug")("statusInfo");
 
 const statusInfo = async (subdomain, appExposerURL = config.appExposerURL) => {
-  const infoURL = new url.URL(`/vice/listing`, appExposerURL);
+  const infoURL = new url.URL(`/vice/admin/listing`, appExposerURL);
   infoURL.search = querystring.stringify({
-    subdomain
+    subdomain,
   });
 
   console.log(`info-url: ${infoURL.toString()}`);
 
   const data = await fetch(infoURL)
-    .then(resp => resp.json())
-    .catch(e => {
+    .then((resp) => resp.json())
+    .catch((e) => {
       debug(e);
       throw e;
     });

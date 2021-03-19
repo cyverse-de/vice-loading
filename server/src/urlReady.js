@@ -31,7 +31,7 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
   );
 
   if (ready) {
-    endpoint = await endpointConfig(subdomain).catch(e => {
+    endpoint = await endpointConfig(subdomain).catch((e) => {
       log.error(`url-ready: URL: ${urlToCheck}; endpoint config error: ${e}`);
       ready = false;
     });
@@ -43,9 +43,9 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
 
   if (ready) {
     ready = await fetch(urlToCheck, {
-      redirect: "manual"
+      redirect: "manual",
     })
-      .then(resp => {
+      .then((resp) => {
         log.debug(
           `url-ready; URL: ${urlToCheck}; fetch response: ${resp.status}`
         );
@@ -54,7 +54,7 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
         }
         return false;
       })
-      .catch(e => {
+      .catch((e) => {
         log.error(e.message);
         return false;
       });
@@ -66,17 +66,17 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
 
   if (ready) {
     ready = await fetch(`http://${endpoint.IP}:${endpoint.Port}/url-ready`, {
-      redirect: "manual"
+      redirect: "manual",
     })
-      .then(resp => resp.json())
-      .then(data => data["ready"])
-      .then(data => {
+      .then((resp) => resp.json())
+      .then((data) => data["ready"])
+      .then((data) => {
         log.debug(
           `url-ready; URL: ${urlToCheck}; endpoint: http://${endpoint.IP}:${endpoint.Port}/url-ready; fetch endpoint response: ${data}`
         );
         return data;
       })
-      .catch(e => {
+      .catch((e) => {
         log.error(e.message);
         return false;
       });
@@ -96,29 +96,31 @@ const k8sDisabled = async (subdomain, urlToCheck) => {
  * @param {String} subdomain - The VICE subdomain to check.
  * @returns {Boolean}
  */
-const k8sEnabled = async subdomain => {
+const k8sEnabled = async (subdomain) => {
   const viceAPI = new url.URL(
-    `/vice/${subdomain}/url-ready`,
+    `/vice/admin/${subdomain}/url-ready`,
     config.appExposerURL
   );
 
+  viceAPI.searchParams.set("user", "vice-loading");
+
   let ready = await fetch(viceAPI, {
-    redirect: "manual"
+    redirect: "manual",
   })
-    .then(async resp => {
+    .then(async (resp) => {
       if (resp.ok) {
         return resp;
       }
       const msg = await resp.text();
       throw new Error(msg);
     })
-    .then(resp => resp.json())
-    .then(data => data["ready"])
-    .then(data => {
+    .then((resp) => resp.json())
+    .then((data) => data["ready"])
+    .then((data) => {
       log.debug(`url-ready; URL: ${viceAPI}; ${data}`);
       return data;
     })
-    .catch(e => {
+    .catch((e) => {
       log.error(e.message);
       return false;
     });
